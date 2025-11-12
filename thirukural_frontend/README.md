@@ -18,6 +18,17 @@ In the project directory, you can run:
 Runs the app in development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
+If you access the dev server through a preview URL or reverse proxy and see "Invalid Host header", the dev server needs to accept the preview host. This template configures the start script to:
+- Bind to 0.0.0.0 (HOST=0.0.0.0)
+- Disable host check in development (DANGEROUSLY_DISABLE_HOST_CHECK=true)
+
+You can also copy `.env.example` to `.env` and adjust as needed:
+```
+cp .env.example .env
+# Edit .env to suit your preview environment
+```
+> Note: These settings are intended only for development environments.
+
 ### `npm test`
 
 Launches the test runner in interactive watch mode.

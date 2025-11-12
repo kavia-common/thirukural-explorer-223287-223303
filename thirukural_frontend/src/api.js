@@ -75,6 +75,80 @@ export async function getRandomKural() {
   throw error;
 }
 
+// PUBLIC_INTERFACE
+/**
+ * Analyze the current kural by calling backend POST /api/v1/thirukural/analyze
+ *
+ * Input: { number: number, kural: string, translation: string }
+ * Output on success:
+ * {
+ *   number, kural, translation,
+ *   audience: 'Al Ayman',
+ *   explanation: string,
+ *   model_used: string,
+ *   source: 'openai' | 'placeholder',
+ *   diagnostics: object
+ * }
+ */
+export async function analyzeKural({ number, kural, translation }) {
+  const envBase = process.env.REACT_APP_API_URL && process.env.REACT_APP_API_URL.trim();
+  const relativeBase = '/api';
+  const fallbackBase = `${window.location.protocol}//${window.location.hostname}:3001`;
+
+  const basesToTry = [relativeBase];
+  if (envBase) basesToTry.push(envBase);
+  if (!envBase || envBase !== fallbackBase) basesToTry.push(fallbackBase);
+
+  let lastError;
+
+  for (const base of basesToTry) {
+    const url = `${base.replace(/\/+$/, '')}/v1/thirukural/analyze`;
+    try {
+      const res = await window.fetch(url, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ number, kural, translation })
+      });
+
+      if (!res.ok) {
+        const text = await safeReadText(res);
+        throw new Error(`Analyze failed (${res.status}): ${truncate(text || res.statusText, 200)}`);
+      }
+
+      let data;
+      try {
+        data = await res.json();
+      } catch {
+        throw new Error('Received invalid JSON from the analyze endpoint.');
+      }
+
+      // Return as-is; backend guarantees fields per spec. Keep resilient fallback mapping if needed.
+      return {
+        number: data.number ?? number,
+        kural: data.kural ?? kural,
+        translation: data.translation ?? translation,
+        audience: data.audience || 'Al Ayman',
+        explanation: data.explanation || '',
+        model_used: data.model_used || data.model || 'placeholder',
+        source: data.source || (data.external_call_used ? 'openai' : 'placeholder'),
+        diagnostics: data.diagnostics || {
+          external_call_used: !!data.external_call_used
+        }
+      };
+    } catch (err) {
+      lastError = err;
+      continue;
+    }
+  }
+
+  const error = new Error('Unable to analyze this Kural right now. Please try again.');
+  error.cause = lastError;
+  throw error;
+}
+
 /**
  * Normalize varying backend response shapes into consistent fields.
  */

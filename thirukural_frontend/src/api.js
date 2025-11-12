@@ -81,10 +81,23 @@ export async function getRandomKural() {
 function normalizeKuralResponse(data) {
   // Common possible keys from different APIs
   const number = data?.number ?? data?.id ?? data?.kural_no ?? data?.kuralNumber;
-  const tamil = data?.kural_tamil ?? data?.tamil ?? data?.line1
-    ? [data?.line1, data?.line2].filter(Boolean).join(' ')
-    : data?.kural_tamil;
-  const english = data?.kural_english ?? data?.eng ?? data?.translation ?? data?.meaning;
+
+  // Map 'kural' (backend Tamil text) to kural_tamil, preserving other possible shapes
+  const tamil =
+    data?.kural_tamil
+      ?? data?.kural
+      ?? data?.tamil
+      ?? (data?.line1 || data?.line2
+        ? [data?.line1, data?.line2].filter(Boolean).join(' ')
+        : undefined);
+
+  // Map 'translation' (backend English meaning) to kural_english
+  const english =
+    data?.kural_english
+      ?? data?.translation
+      ?? data?.eng
+      ?? data?.meaning;
+
   const section = data?.section ?? data?.adhikaram ?? data?.paal ?? data?.meta?.section;
   const chapter = data?.chapter ?? data?.iyal ?? data?.meta?.chapter;
 

@@ -56,7 +56,11 @@ function KuralCard({ loading, error, kural, onRefresh }) {
           </div>
 
           {kural.kural_tamil && (
-            <blockquote className="kural-tamil" lang="ta">
+            <blockquote
+              className="kural-tamil"
+              lang="ta"
+              style={{ fontFamily: `"Noto Sans Tamil", "Latha", "Vijaya", "Mukta Malar", "Noto Serif Tamil", "System UI", sans-serif` }}
+            >
               {kural.kural_tamil}
             </blockquote>
           )}

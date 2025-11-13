@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thirukural Explorer</title>
+    <meta name="description" content="Discover a random Thirukural and its meaning." />
+    <style>
+      :root {
+        --primary: #3b82f6;
+        --secondary: #64748b;
+        --success: #06b6d4;
+        --error: hsl(0 84% 60%);
+        --bg: #f8fafc;
+        --text: #111827;
+        --card: #ffffff;
+        --border: #e5e7eb;
+      }
+      html, body, #root {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(243,244,246,1));
+        color: var(--text);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/index.jsx"></script>
+  </body>
+</html>

@@ -12,13 +12,16 @@ The app fetches a random kural from:
 - /api/random (proxied to http://localhost:3001 via vite.config.js)
 - Falls back to http://localhost:3001/api/random if proxy is unavailable.
 
-Ensure the backend provides an endpoint compatible with one of these.
+Ensure the backend provides endpoints:
+- GET /api/random
+- GET /health (for backend readiness)
 
-## Health
-A lightweight dev health server is included:
-- node dev-server.js -> exposes GET /health returning {status:"ok"} on port 3000
+## Frontend Health
+Vite dev server exposes a health endpoint for readiness:
+- GET /health -> { "status": "ok" }
+- You can customize the path via env var REACT_APP_HEALTHCHECK_PATH (default "/health").
 
-This is optional for local development; use Vite for the app.
+Note: A separate custom dev-server is not required and has been removed to avoid conflicts.
 
 ## Run
 1. cd thirukural_frontend
